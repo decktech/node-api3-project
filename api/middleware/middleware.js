@@ -11,12 +11,10 @@ function validateUserId(req, res, next) {
     .then(result => {
       if (result == null) {
         next({ status: 404, message: "user not found"});
-        // res.status(404).json({ message: "user not found"})
-        return;
+      } else {
+        req.existingUser = result;
+        next();
       }
-
-      req.existingUser = result;
-      next();
     })
     .catch(err => next(err))
 }
@@ -24,18 +22,24 @@ function validateUserId(req, res, next) {
 function validateUser(req, res, next) {
   if (typeof req.body.name !== 'string') {
     next({ status: 400, message: 'missing required name field' });
-    // res.status(400).json({ message: 'missing required name field' })
   } else if (req.body.name.trim() === '') {
-    next({ status: 400, message: 'missing required name field'})
-    // res.status(400).json({ message: 'missing required name field' })
+    next({ status: 400, message: 'missing required name field'});
   } else {
-    req.newUser = { name: req.body.name.trim() };
+    req.newUser = { name: req.body.name };
     next();
   }
 }
 
 function validatePost(req, res, next) {
   // DO YOUR MAGIC
+  if (typeof req.body.text !== 'string') {
+    next({ status: 400, message: 'missing required text field' });
+  } else if (req.body.text.trim() === '') {
+    next({ status: 400, message: 'missing required text field'});
+  } else {
+    req.newPost = { text: req.body.text };
+    next();
+  }
 }
 
 // do not forget to expose these functions to other modules

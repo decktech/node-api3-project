@@ -41,26 +41,45 @@ router.post('/', validateUser, (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
   // RETURN THE FRESHLY UPDATED USER OBJECT
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
+  User.update(req.params.id, req.newUser)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(err => next(err))
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId, (req, res) => {
   // RETURN THE FRESHLY DELETED USER OBJECT
   // this needs a middleware to verify user id
+  User.remove(req.params.id)
+    .then(() => {
+      res.status(200).json(req.existingUser)
+    })
+    .catch(err => next(err))
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
   // RETURN THE ARRAY OF USER POSTS
   // this needs a middleware to verify user id
+  User.getUserPosts(req.params.id)
+    .then(result => {
+      res.status(200).json(result)
+    })
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // RETURN THE NEWLY CREATED USER POST
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
+  Post.insert(req.newPost)
+    .then(post => {
+      res.status(201).json(post);
+      // console.log(post)  
+    }) 
 });
 
 // do not forget to export the router
