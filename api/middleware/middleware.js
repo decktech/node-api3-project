@@ -37,7 +37,7 @@ function validatePost(req, res, next) {
   } else if (req.body.text.trim() === '') {
     next({ status: 400, message: 'missing required text field'});
   } else {
-    req.newPost = { text: req.body.text };
+    req.newPost = { text: req.body.text, user_id: req.params.id };
     next();
   }
 }

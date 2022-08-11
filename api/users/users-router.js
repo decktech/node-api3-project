@@ -69,6 +69,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
     .then(result => {
       res.status(200).json(result)
     })
+    .catch(err => next(err))
 });
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
@@ -77,9 +78,9 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // and another middleware to check that the request body is valid
   Post.insert(req.newPost)
     .then(post => {
-      res.status(201).json(post);
-      // console.log(post)  
-    }) 
+      res.status(201).json(post);  
+    })
+    .catch(err => next(err)) 
 });
 
 // do not forget to export the router
